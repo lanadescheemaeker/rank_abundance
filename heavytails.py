@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 import sys
 
-sys.path.insert(1, '../plot_functions/')
+sys.path.insert(1, '../helper_functions/')
 from piecewise_normalizations import PiecewiseLogNorm, PiecewiseNormalize
 
 import powerlaw
@@ -93,7 +93,7 @@ def fit_heavytail(input_ra, func='lognorm', discrete=False):
     elif func == 'pareto':
         if np.any(np.isnan(ra)) or np.all(ra == 0):
             return (np.nan,) * 5
-        b, loc, scale = stats.pareto.fit(ra, 0.1, loc=0)
+        b, loc, scale = stats.pareto.fit(ra, 0.1, floc=0)
         stat, pval = stats.kstest(ra, 'pareto', args=((b, loc, scale)))
 
         params = (b, loc, scale, stat, pval)
@@ -104,7 +104,7 @@ def fit_heavytail(input_ra, func='lognorm', discrete=False):
 
 
 def plot_heavytail(input_ra, params, ax=None, func='lognorm', add_label=True,
-                   xscale='log', yscale='log', discrete=False, **args):
+                   xscale='log', yscale='log', discrete=False, **kwargs):
     ra = input_ra.copy()
     if not discrete:
         ra = rescale_ra(ra)
@@ -171,7 +171,7 @@ def plot_heavytail(input_ra, params, ax=None, func='lognorm', add_label=True,
     else:
         raise ValueError("Function %s is not defined." % func)
 
-    ax.plot(x_fit, pdf_fitted, label=label if add_label == True else None, color=c, **args)
+    ax.plot(x_fit, pdf_fitted, label=label if add_label == True else None, color=c, **kwargs)
     ax.set_xscale('log')
     ax.legend()
 
